@@ -23,6 +23,7 @@ To build the pointpillars inference, **TensorRT** with PillarScatter layer and *
 
 - Nvidia Jetson Xavier/Orin + Jetpack 5.0
 - CUDA 11.4 + cuDNN 8.3.2 + TensorRT 8.4.0
+- Qt 5.12.0  GCC 10.2 
 
 ### Compile && Run
 

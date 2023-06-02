@@ -16,16 +16,16 @@
 cmake_minimum_required(VERSION 2.8.7)
 project(demo)
 find_package(CUDA REQUIRED)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts)
 
-if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL  "aarch64")
-  set(CMAKE_C_COMPILER /usr/bin/aarch64-linux-gnu-gcc)
-  set(CMAKE_CXX_COMPILER /usr/bin/aarch64-linux-gnu-g++)
-  set(CUDA_INSTALL_TARGET_DIR targets/aarch64-linux)
-elseif(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "x86_64")
-  set(CMAKE_C_COMPILER /usr/bin/gcc)
-  set(CMAKE_CXX_COMPILER /usr/bin/g++)
-  set(CUDA_INSTALL_TARGET_DIR targets/x86_64-linux)
-endif()
+set(CMAKE_AUTOMATIC ON)
+set(CMAKE_AUTODOC ON)
+set(CMAKE_AUTOCRAT ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 set(CUDA_TOOLKIT_ROOT_DIR /usr/local/cuda)
 set(CUDA_INCLUDE_DIRS ${CUDA_TOOLKIT_ROOT_DIR}/${CUDA_INSTALL_TARGET_DIR}/include)
@@ -76,11 +76,19 @@ link_directories(
 file(GLOB_RECURSE SOURCE_FILES
     src/*.cu
     src/*.cpp
+	src/*.ui
 )
+file(GLOB_RECURSE HEADER_FILES
+	include/*.h
+	include/*.hpp)
 
-cuda_add_executable(${PROJECT_NAME} main.cpp ${SOURCE_FILES})
+cuda_add_executable(${PROJECT_NAME} main.cpp ${SOURCE_FILES} ${HEADER_FILES})
 
 target_link_libraries(${PROJECT_NAME}
+		Qt${QT_VERSION_MAJOR}::Widgets
+		Qt${QT_VERSION_MAJOR}::Charts
     libnvinfer.so
     libnvonnxparser.so
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
